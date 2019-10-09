@@ -37,7 +37,7 @@ Led *led[LED_NUMBER];
 Button *button[BUTTON_NUMBER];
 
 
-void reveive_command(int nb);
+void receive_command(int nb);
 
 void setup()
 {
@@ -45,28 +45,37 @@ void setup()
     led[1] = new Led(A1, false);
     led[2] = new Led(A2, false);
     /* MAX LED_NUMBER */
+    
 
+     
 //    test.setPower(0x01);
     
     Wire.begin(0x61);
-//    Wire.onReceive(receive_command);
+    Wire.onReceive(receive_command);
    // Wire.onRequest(request_status);
-
+  led[0]->setPower(1);
 }
 
 void loop()
 {
-    display.printString("pret");
-    led[0]->setPower(1);
-    delay(2000);
-    display.setIntensity(255);
-    delay(1000);
-    display.setIntensity(0);
-    led[0]->setPower(0);
-    delay(1000);
-    display.setIntensity(60);
-    delay(1000);
-    display.setIntensity(128);
+    //led[0]->setPower(1);
+    led[0]->setBlink(10, 50);
+    led[0]->loop();
+
+    delay(LOOP_PERIOD);
+    
+//    display.printString("pret");
+//    led[0]->setPower(1);
+//    delay(2000);
+//    display.setIntensity(255);
+//    led[0]->setIntensity(100);
+//    delay(1000);
+//    display.setIntensity(0);
+//    led[0]->setBlink(200, 126);
+//    delay(1000);
+//    display.setIntensity(60);
+//    delay(1000);
+//    display.setIntensity(128);
 
     
 }
@@ -85,7 +94,7 @@ void loop()
     else                                                                              \
         request_msg[2] = device[id]->commandSet(command, &packet[3], nb - 3);
 
-void reveive_command(int nb)
+void receive_command(int nb)
 {
     uint8_t command = 0;
     uint8_t packet[nb];

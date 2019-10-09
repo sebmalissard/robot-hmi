@@ -13,6 +13,8 @@ class Led
     public:
         Led(uint8_t pin, bool is_pwm);
         
+        void loop();
+        
         status_t commandGet(uint8_t cmd, uint8_t *arg, size_t *size);
         status_t commandSet(uint8_t cmd, const uint8_t *arg, size_t size);
         
@@ -21,8 +23,13 @@ class Led
         
         status_t getIntensity(uint8_t *intensity);
         status_t setIntensity(uint8_t intensity);
+        
+        status_t getBlink(uint16_t *period, uint8_t *duty_cycle);
+        status_t setBlink(uint16_t period, uint8_t duty_cycle);
     
     private:
+        void ledSetValue(bool value);
+        
         uint8_t     _pin;
         bool        _is_pwm;
         bool        _power;
