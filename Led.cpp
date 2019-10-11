@@ -62,7 +62,7 @@ status_t Led::commandGet(uint8_t cmd, uint8_t *arg, size_t *size)
             return getBlink((uint16_t*) &arg[0], &arg[2]);
             
         default:
-            SERIAL_DEBUG.println("Unsupported Led get command");
+            SERIAL_DEBUG.println("Unsupported Led get command.");
     }
 
     return INVALID_COMMAND;
@@ -76,19 +76,19 @@ status_t Led::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
              if (size == 1)
                 return setPower(arg[0]);
              break;
-        
+            
         case INTENSITY:
             if (size == 1)
                 return setIntensity(arg[0]);
             break;
-
+            
         case BLINK:
             if (size == 3)
                 return setBlink((arg[0] << 8) + arg[1], arg[2]);
             break;
-        
+            
         default:
-            SERIAL_DEBUG.println("Unsupported Led set command");
+            SERIAL_DEBUG.println("Unsupported Led set command.");
     }
     
     return INVALID_COMMAND;
@@ -110,16 +110,9 @@ status_t Led::getPower(uint8_t *power)
 
 status_t Led::setPower(uint8_t power)
 {
-    _power = power ? true : false;
+    _power = power ? HIGH : LOW;
     
-    if (_is_pwm)
-    {
-        analogWrite(_pin, _power ? _intensity : 0);
-    }
-    else
-    {
-        digitalWrite(_pin, _power);
-    }
+    ledSetValue(_power);
     
     return STATUS_OK;
 }
@@ -140,10 +133,7 @@ status_t Led::setIntensity(uint8_t intensity)
 {
     _intensity = intensity;
     
-    if (_power)
-    {
-        ledSetValue(HIGH);
-    }
+    ledSetValue(_power);
     
     return STATUS_OK;
 }
@@ -165,6 +155,8 @@ status_t Led::setBlink(uint16_t period, uint8_t duty_cycle)
 {
     _blink_period = period;
     _blink_duty_cycle = duty_cycle;
+    
+    ledSetValue(_power);
     
     return STATUS_OK;
 }

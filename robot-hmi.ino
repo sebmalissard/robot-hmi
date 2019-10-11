@@ -3,9 +3,11 @@
 #include "common.h"
 #include "Max7219.h"
 #include "Led.h"
+#include "LedRgb.h"
 #include "Button.h"
 
 #define LED_NUMBER      3
+#define LED_RGB_NUMBER  1
 #define BUTTON_NUMBER   6
 
 
@@ -13,7 +15,7 @@ typedef enum device_t {
     SYSTEM          = 0x00,
     GPIO            = 0x01,
     LED             = 0x02,
-    LED_RGB         = 0x02,
+    LED_RGB         = 0x03,
     BUTTON          = 0x04,
     SERVO           = 0x05,
     AX12            = 0x06,
@@ -34,6 +36,7 @@ size_t  request_size = 0;
 Max7219 display(4);
 
 Led *led[LED_NUMBER];
+LedRgb *led_rgb[LED_RGB_NUMBER];
 Button *button[BUTTON_NUMBER];
 
 
@@ -45,6 +48,9 @@ void setup()
     led[1] = new Led(A1, false);
     led[2] = new Led(A2, false);
     /* MAX LED_NUMBER */
+
+    led_rgb[0] = new LedRgb(5, 6, 9, false);
+    /* MAX LED_RGB_NUMBER */
     
 
      
@@ -54,13 +60,16 @@ void setup()
     Wire.onReceive(receive_command);
    // Wire.onRequest(request_status);
   led[0]->setPower(1);
+      led_rgb[0]->setPower(HIGH);
+    led_rgb[0]->setColor(0);
 }
 
 void loop()
 {
     //led[0]->setPower(1);
-    led[0]->setBlink(10, 50);
+    //led[0]->setBlink(10, 50);
     led[0]->loop();
+    led_rgb[0]->loop();
 
     delay(LOOP_PERIOD);
     
@@ -141,6 +150,18 @@ void receive_command(int nb)
             }
             break;
         
+        case LED_RGB:
+            if (id < LED_RGB_NUMBER)
+            {
+                COMMAND(led_rgb);
+            }
+            else
+            {
+                SERIAL_DEBUG.println("ERROR: Invalid LED RGB ID");
+                // status = INVALID;
+            }
+            break;
+
         case BUTTON:
             if (id < BUTTON_NUMBER)
             {
