@@ -5,23 +5,24 @@
 #include "Led.h"
 #include "LedRgb.h"
 #include "Button.h"
+#include "Display7seg4dig.h"
 
-#define LED_NUMBER      3
-#define LED_RGB_NUMBER  1
-#define BUTTON_NUMBER   6
-
+#define LED_NUMBER                  3
+#define LED_RGB_NUMBER              1
+#define BUTTON_NUMBER               6
+#define DISPLAY_7SEG_4DIG_NUMBER    1
 
 typedef enum device_t {
-    SYSTEM          = 0x00,
-    GPIO            = 0x01,
-    LED             = 0x02,
-    LED_RGB         = 0x03,
-    BUTTON          = 0x04,
-    SERVO           = 0x05,
-    AX12            = 0x06,
-    SEVEN_SEG_DIG   = 0x07,
-    MOTOR           = 0x08,
-    IRQ             = 0xFF
+    SYSTEM              = 0x00,
+    GPIO                = 0x01,
+    LED                 = 0x02,
+    LED_RGB             = 0x03,
+    BUTTON              = 0x04,
+    SERVO               = 0x05,
+    AX12                = 0x06,
+    DISPLAY_7SEG_4DIG   = 0x07,
+    MOTOR               = 0x08,
+    IRQ                 = 0xFF
 } device_t;
 
 status_t status = OK;
@@ -33,11 +34,12 @@ uint8_t request_msg[16] = {0};
 size_t  request_size = 0;
 
 
-Max7219 display(4);
+
 
 Led *led[LED_NUMBER];
 LedRgb *led_rgb[LED_RGB_NUMBER];
 Button *button[BUTTON_NUMBER];
+Display7seg4dig *display_7seg_4dig[DISPLAY_7SEG_4DIG_NUMBER];
 
 
 void receive_command(int nb);
@@ -51,25 +53,34 @@ void setup()
 
     led_rgb[0] = new LedRgb(5, 6, 9, false);
     /* MAX LED_RGB_NUMBER */
-    
+
+    display_7seg_4dig[0] = new Display7seg4dig();
+    /* MAX DISPLAY_7SEG_4DIG_NUMBER */
 
      
 //    test.setPower(0x01);
     
     Wire.begin(0x61);
     Wire.onReceive(receive_command);
-   // Wire.onRequest(request_status);
-  led[0]->setPower(1);
-      led_rgb[0]->setPower(HIGH);
-    led_rgb[0]->setColor(0);
+    // Wire.onRequest(request_status);
+
+    display_7seg_4dig[0]->setPower(0);
+    display_7seg_4dig[0]->setIntensity(255);
+    display_7seg_4dig[0]->setPower(1);
+    //display_7seg_4dig[0]->setRaw(16, 32, 64, 128);
+    display_7seg_4dig[0]->setChar('h', 'o', 'l', 'o');
+    //display_7seg_4dig[0]->setInteger(8888);
+    display_7seg_4dig[0]->setBlink(1000, 128);
 }
 
 void loop()
 {
+
     //led[0]->setPower(1);
     //led[0]->setBlink(10, 50);
     led[0]->loop();
     led_rgb[0]->loop();
+    display_7seg_4dig[0]->loop();
 
     delay(LOOP_PERIOD);
     
@@ -173,7 +184,18 @@ void receive_command(int nb)
                 // status = INVALID;
             }
             break;
-        
+            
+        case DISPLAY_7SEG_4DIG:
+            if (id < DISPLAY_7SEG_4DIG_NUMBER)
+            {
+                COMMAND(display_7seg_4dig);
+            }
+            else
+            {
+                SERIAL_DEBUG.println("ERROR: Invalid Display 7 segments 4 digits ID");
+                // status = INVALID;
+            }
+            break;
         
         
         

@@ -33,14 +33,15 @@ uint8_t led_rgb_pwm_tab[COLOR_MAX][3] =
     {0xFF, 0xFF, 0xFF},
 };
 
-
-
 LedRgb::LedRgb(uint8_t pin_red, uint8_t pin_green, uint8_t pin_blue, bool is_common_cathode): 
-    _pin_red(pin_red), _pin_green(pin_green), _pin_blue(pin_blue), _is_common_cathode(is_common_cathode)
+    _pin_red(pin_red), _pin_green(pin_green), _pin_blue(pin_blue), _is_common_cathode(is_common_cathode),
+    _power(LOW), _pwm_red(0), _pwm_green(0), _pwm_blue(0), _blink_period(0), _blink_duty_cycle(0)
 {
     pinMode(pin_red,   OUTPUT);
     pinMode(pin_green, OUTPUT);
     pinMode(pin_blue,  OUTPUT);
+
+    ledSetValue(_power);
 }
 
 void LedRgb::loop()

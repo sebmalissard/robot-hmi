@@ -17,7 +17,10 @@ class Max7219
         
         // See table for all character supported
         void printString(const char *string);
-
+        
+        // Print raw, expected tab size didigNum
+        void printRaw(const uint8_t dig[]);
+        
         // 0 to 255, but only 16 level available
         void setIntensity(const uint8_t intensity);
         

@@ -7,9 +7,12 @@ typedef enum led_cmd_t
     BLINK       = 0x03,
 } led_cmd_t;
 
-Led::Led(uint8_t pin, bool is_pwm): _pin(pin), _is_pwm(is_pwm)
+Led::Led(uint8_t pin, bool is_pwm): _pin(pin), _is_pwm(is_pwm), _power(LOW),  _intensity(128),
+    _blink_period(0), _blink_duty_cycle(0)
 {
     pinMode(pin, OUTPUT);
+    
+    ledSetValue(_power);
 }
 
 void Led::loop()
@@ -93,8 +96,6 @@ status_t Led::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
     
     return INVALID_COMMAND;
 }
-
-
 
 status_t Led::getPower(uint8_t *power)
 {

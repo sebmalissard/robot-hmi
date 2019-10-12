@@ -170,6 +170,16 @@ void Max7219::printString(const char *string)
     }
 }
 
+void Max7219::printRaw(const uint8_t dig[])
+{
+    unsigned int i;
+    
+    for (i=0; i<digitNum; i++)
+    {
+        regWrite(MAX7219_REG_DIGIT_0 + i, dig[i]);
+    }
+}
+
 void Max7219::setIntensity(const uint8_t intensity)
 {
     regWrite(MAX7219_REG_INTENSITY, intensity/16);
