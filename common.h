@@ -2,16 +2,15 @@
 #define _COMMON_H
 
 #define SERIAL_DEBUG    Serial
-#define LOOP_PERIOD     1 /* in ms */
+#define LOOP_PERIOD     1   /* in ms */
+#define LOOP_POLLING_BUTTON 10  /* in ms; must be greater than LOOP_PERIOD */
 
 typedef enum status_t {
-    OK,
-    ERROR,
-    STATUS_OK                  = 0x00,
-    STATUS_ERROR               = 0x01,
-    INVALID_COMMAND     = 0x02,
-    UNSUPPORTED_ID      = 0x03,
-    UNSUPPORTED_COMMAND = 0x04,
+    STATUS_OK                 = 0x00,
+    STATUS_ERROR              = 0x01,
+    STATUS_INVALID_COMMAND    = 0x02,
+    STATUS_INVALID_ID         = 0x03,
+    STATUS_INVALID_DEVICE     = 0x04,
 } status_t;
 
 /*

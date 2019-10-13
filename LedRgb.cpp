@@ -101,7 +101,7 @@ status_t LedRgb::commandGet(uint8_t cmd, uint8_t *arg, size_t *size)
             SERIAL_DEBUG.println("Unsupported Led RGB get command.");
     }
 
-    return INVALID_COMMAND;
+    return STATUS_INVALID_COMMAND;
 }
 
 status_t LedRgb::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
@@ -132,7 +132,7 @@ status_t LedRgb::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
             SERIAL_DEBUG.println("Unsupported Led RGB set command.");
     }
     
-    return INVALID_COMMAND;
+    return STATUS_INVALID_COMMAND;
 }
 
 status_t LedRgb::getPower(uint8_t *power)

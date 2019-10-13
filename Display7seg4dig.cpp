@@ -70,7 +70,7 @@ status_t Display7seg4dig::commandGet(uint8_t cmd, uint8_t *arg, size_t *size)
             SERIAL_DEBUG.println("Unsupported Display 7seg 4dig get command.");
     }
 
-    return INVALID_COMMAND;
+    return STATUS_INVALID_COMMAND;
 }
 
 status_t Display7seg4dig::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
@@ -111,7 +111,7 @@ status_t Display7seg4dig::commandSet(uint8_t cmd, const uint8_t *arg, size_t siz
             SERIAL_DEBUG.println("Unsupported Display 7seg 4dig set command.");
     }
     
-    return INVALID_COMMAND;
+    return STATUS_INVALID_COMMAND;
 }
 
 status_t Display7seg4dig::getPower(uint8_t *power)

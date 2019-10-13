@@ -2,23 +2,27 @@
 
 typedef enum button_cmd_t
 {
-    STATUS      = 0x01,
+    STATE      = 0x01,
 } button_cmd_t;
 
+Button::Button(uint8_t pin): _pin(pin)
+{
+    pinMode(pin, INPUT_PULLUP);
+}
 
 status_t Button::commandGet(uint8_t cmd, uint8_t *arg, size_t *size)
 {
     switch ((button_cmd_t) cmd)
     {
-        case STATUS:
+        case STATE:
             *size = 1;
-            return getStatus(&arg[0]);
+            return getState(&arg[0]);
             
         default:
             SERIAL_DEBUG.println("Unsupported Button get command");
     }
 
-    return INVALID_COMMAND;
+    return STATUS_INVALID_COMMAND;
 }
 
 status_t Button::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
@@ -33,21 +37,21 @@ status_t Button::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
             SERIAL_DEBUG.println("Unsupported Button set command");
     }
     
-    return INVALID_COMMAND;
+    return STATUS_INVALID_COMMAND;
 }
 
 
 
-status_t Button::getStatus(uint8_t *status)
+status_t Button::getState(uint8_t *state)
 {
-    if (!status)
+    if (!state)
     {
         return STATUS_ERROR;
     }
     
-    _status = digitalRead(_pin);
+    _state = !digitalRead(_pin);
     
-    *status = _status;
+    *state = _state;
     
     return STATUS_OK;
 }
