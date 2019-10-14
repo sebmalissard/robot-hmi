@@ -121,6 +121,8 @@ void setup()
     /* MAX IRQ_NUMBER */
      
 //    test.setPower(0x01);
+
+    SERIAL_DEBUG.begin(9600);
     
     Wire.begin(0x61);
     Wire.onReceive(receive_command);
@@ -238,7 +240,7 @@ void receive_command(int nb)
         case DISPLAY_7SEG_4DIG:
             if (id < DISPLAY_7SEG_4DIG_NUMBER)
             {
-                //COMMAND(display_7seg_4dig);
+                COMMAND(display_7seg_4dig);
             }
             else
             {

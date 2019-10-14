@@ -40,8 +40,6 @@
 
 Max7219::Max7219(unsigned int digitNum) : digitNum(digitNum)
 {
-    SERIAL_DEBUG.begin(9600);
-    
     if (digitNum > 8)
     {
         SERIAL_DEBUG.print("ERROR: Invalid number of digits, max 8, current: ");
@@ -159,8 +157,8 @@ void Max7219::printString(const char *string)
         {
             break;
         }
-        SERIAL_DEBUG.print("Value: ");
-        SERIAL_DEBUG.println(string[i], BIN);
+        //SERIAL_DEBUG.print("Value: ");
+        //SERIAL_DEBUG.println(string[i], BIN);
         regWrite(MAX7219_REG_DIGIT_0 + i, asciiDigit[(uint8_t) string[i]]);
     }
 
@@ -195,9 +193,9 @@ void Max7219::clear()
 
 void Max7219::regWrite(uint8_t reg, uint8_t val)
 {
-    SERIAL_DEBUG.print(reg, HEX);
-    SERIAL_DEBUG.print(" ");
-    SERIAL_DEBUG.println(val, BIN);
+    //SERIAL_DEBUG.print(reg, HEX);
+    //SERIAL_DEBUG.print(" ");
+    //SERIAL_DEBUG.println(val, BIN);
     
     digitalWrite(SPI_SS, LOW);
     SPI.transfer(reg);

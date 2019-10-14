@@ -33,7 +33,7 @@ uint8_t led_rgb_pwm_tab[COLOR_MAX][3] =
     {0xFF, 0xFF, 0xFF},
 };
 
-LedRgb::LedRgb(uint8_t pin_red, uint8_t pin_green, uint8_t pin_blue, bool is_common_cathode): 
+LedRgb::LedRgb(uint8_t pin_red, uint8_t pin_green, uint8_t pin_blue, bool is_common_cathode): _force_update(true),
     _pin_red(pin_red), _pin_green(pin_green), _pin_blue(pin_blue), _is_common_cathode(is_common_cathode),
     _power(LOW), _pwm_red(0), _pwm_green(0), _pwm_blue(0), _blink_period(0), _blink_duty_cycle(0)
 {
@@ -48,7 +48,13 @@ void LedRgb::loop()
 {
     static uint16_t i = 0;
     static bool last_value = LOW;
-
+    
+    if (_force_update)
+    {
+        ledSetValue(_power);
+        _force_update = false;
+    }
+    
     if (_power)
     {
         if (i < DIV_ROUND_CLOSEST((uint32_t)_blink_period * _blink_duty_cycle / 255, LOOP_PERIOD))
@@ -151,7 +157,7 @@ status_t LedRgb::setPower(uint8_t power)
 {
     _power = power ? true : false;
 
-    ledSetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -188,8 +194,8 @@ status_t LedRgb::setColor(uint8_t color)
     _pwm_red   = led_rgb_pwm_tab[color][0];
     _pwm_green = led_rgb_pwm_tab[color][1];
     _pwm_blue  = led_rgb_pwm_tab[color][2];
-
-    ledSetValue(_power);
+    
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -214,7 +220,7 @@ status_t LedRgb::setPwm(uint8_t pwm_red, uint8_t pwm_green, uint8_t pwm_blue)
     _pwm_green = pwm_green;
     _pwm_blue  = pwm_blue;
     
-    ledSetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -237,7 +243,7 @@ status_t LedRgb::setBlink(uint16_t period, uint8_t duty_cycle)
     _blink_period = period;
     _blink_duty_cycle = duty_cycle;
     
-    ledSetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }

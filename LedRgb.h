@@ -33,6 +33,7 @@ class LedRgb
     private:
         void ledSetValue(bool value);
         
+        bool        _force_update;
         uint8_t     _pin_red;
         uint8_t     _pin_green;
         uint8_t     _pin_blue;

@@ -30,6 +30,7 @@ class Led
     private:
         void ledSetValue(bool value);
         
+        bool        _force_update;
         uint8_t     _pin;
         bool        _is_pwm;
         bool        _power;

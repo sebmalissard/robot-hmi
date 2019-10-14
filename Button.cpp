@@ -40,8 +40,6 @@ status_t Button::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
     return STATUS_INVALID_COMMAND;
 }
 
-
-
 status_t Button::getState(uint8_t *state)
 {
     if (!state)

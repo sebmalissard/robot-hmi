@@ -37,6 +37,7 @@ class Display7seg4dig
         
         enum printFunc {CHAR, RAW, INTEGER}; 
         
+        bool        _force_update;
         Max7219     _display;
         printFunc   _print_func;
         bool        _power;

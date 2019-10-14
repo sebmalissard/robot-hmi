@@ -10,7 +10,7 @@ typedef enum display_7seg_4dig_cmd_t
     BLINK       = 0x06,
 } display_7seg_4dig_cmd_t;
 
-Display7seg4dig::Display7seg4dig(): _display(4), _power(LOW), _print_func(RAW), _intensity(128),
+Display7seg4dig::Display7seg4dig(): _force_update(true), _display(4), _power(LOW), _print_func(RAW), _intensity(128),
     _char({0, 0, 0, 0}), _raw({0, 0, 0, 0}), _integer(0), _blink_period(0), _blink_duty_cycle(0)
 {
     displaySetValue(_power);
@@ -21,6 +21,12 @@ void Display7seg4dig::loop()
 {
     static uint16_t i = 0;
     static bool last_value = LOW;
+    
+    if (_force_update)
+    {
+        displaySetValue(_power);
+        _force_update = false;
+    }
     
     if (_power)
     {
@@ -130,7 +136,7 @@ status_t Display7seg4dig::setPower(uint8_t power)
 {
     _power = power ? HIGH : LOW;
     
-    displaySetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -151,7 +157,7 @@ status_t Display7seg4dig::setIntensity(uint8_t intensity)
 {
     _intensity = intensity;
     
-    displaySetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -165,7 +171,7 @@ status_t Display7seg4dig::setChar(uint8_t dig0, uint8_t dig1, uint8_t dig2, uint
     _char[2] = dig2;
     _char[3] = dig3;
     
-    displaySetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -179,7 +185,7 @@ status_t Display7seg4dig::setRaw(uint8_t dig0, uint8_t dig1, uint8_t dig2, uint8
     _raw[2] = dig2;
     _raw[3] = dig3;
     
-    displaySetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -195,7 +201,7 @@ status_t Display7seg4dig::setInteger(int16_t integer)
     
     _integer = integer;
     
-    displaySetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -209,6 +215,8 @@ status_t Display7seg4dig::getBlink(uint16_t *period, uint8_t *duty_cycle)
     
     *period = _blink_period;
     *duty_cycle = _blink_duty_cycle;
+    
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -225,11 +233,8 @@ status_t Display7seg4dig::setBlink(uint16_t period, uint8_t duty_cycle)
 
 void Display7seg4dig::displaySetValue(bool value)
 {
-    SERIAL_DEBUG.println("Enter set value.");
     if (value)
     {
-        SERIAL_DEBUG.println("Intensity debug:");
-        SERIAL_DEBUG.println(_intensity);
         _display.setIntensity(_intensity);
         
         switch (_print_func)

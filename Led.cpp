@@ -7,7 +7,7 @@ typedef enum led_cmd_t
     BLINK       = 0x03,
 } led_cmd_t;
 
-Led::Led(uint8_t pin, bool is_pwm): _pin(pin), _is_pwm(is_pwm), _power(LOW),  _intensity(128),
+Led::Led(uint8_t pin, bool is_pwm): _force_update(true), _pin(pin), _is_pwm(is_pwm), _power(LOW),  _intensity(128),
     _blink_period(0), _blink_duty_cycle(0)
 {
     pinMode(pin, OUTPUT);
@@ -19,6 +19,12 @@ void Led::loop()
 {
     static uint16_t i = 0;
     static bool last_value = LOW;
+    
+    if (_force_update)
+    {
+        ledSetValue(_power);
+        _force_update = false;
+    }
     
     if (_power)
     {
@@ -113,7 +119,7 @@ status_t Led::setPower(uint8_t power)
 {
     _power = power ? HIGH : LOW;
     
-    ledSetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -134,7 +140,7 @@ status_t Led::setIntensity(uint8_t intensity)
 {
     _intensity = intensity;
     
-    ledSetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
@@ -157,7 +163,7 @@ status_t Led::setBlink(uint16_t period, uint8_t duty_cycle)
     _blink_period = period;
     _blink_duty_cycle = duty_cycle;
     
-    ledSetValue(_power);
+    _force_update = true;
     
     return STATUS_OK;
 }
