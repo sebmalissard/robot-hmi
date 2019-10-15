@@ -13,8 +13,6 @@ class Button
     public:
         Button(uint8_t pin);
         
-        void loop();
-        
         status_t commandGet(uint8_t cmd, uint8_t *arg, size_t *size);
         status_t commandSet(uint8_t cmd, const uint8_t *arg, size_t size);
         
