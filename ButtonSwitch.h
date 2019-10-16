@@ -1,17 +1,14 @@
-#ifndef _BUTTON_H
-#define _BUTTON_H
-
-#include <stdarg.h>
-#include <stdint.h>
-
-#include <Arduino.h>
+#ifndef _BUTTON_SWITCH_H
+#define _BUTTON_SWITCH_H
 
 #include "common.h"
 
-class Button
+class ButtonSwitch
 {
     public:
-        Button(uint8_t pin);
+        ButtonSwitch(uint8_t pin);
+        
+        bool irq();
         
         status_t commandGet(uint8_t cmd, uint8_t *arg, size_t *size);
         status_t commandSet(uint8_t cmd, const uint8_t *arg, size_t size);
@@ -23,4 +20,4 @@ class Button
         bool        _state;
 };
 
-#endif /* _BUTTON_H */
+#endif /* _BUTTON_SWITCH_H */

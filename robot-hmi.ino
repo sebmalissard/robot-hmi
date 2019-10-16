@@ -4,7 +4,8 @@
 #include "Max7219.h"
 #include "Led.h"
 #include "LedRgb.h"
-#include "Button.h"
+#include "ButtonSwitch.h"
+#include "ButtonRocker.h"
 #include "Display7seg4dig.h"
 #include "Irq.h"
 
@@ -21,7 +22,8 @@ uint8_t irq_mask = 0xff;
 
 Led *led[LED_NUMBER];
 LedRgb *led_rgb[LED_RGB_NUMBER];
-Button *button[BUTTON_NUMBER];
+ButtonSwitch *button_switch[BUTTON_SWITCH_NUMBER];
+ButtonRocker *button_rocker[BUTTON_ROCKER_NUMBER];
 Display7seg4dig *display_7seg_4dig[DISPLAY_7SEG_4DIG_NUMBER];
 Irq * irq[IRQ_NUMBER];
 
@@ -39,20 +41,20 @@ void irq_button_loop()
         uint8_t state;
 
         prev_time = current_time;
-        
-        for (i=0; i<BUTTON_NUMBER; i++)
-        {
-            if ((irq_mask >> i) & 1)
-            {
-                button[i]->getState(&state);
-                
-                if (state)
-                {
-                    irq_reg |= (1 << i);
-                    irq[0]->setIrq(HIGH);
-                }
-            }
-        }
+// TODO fixme
+//        for (i=0; i<BUTTON_NUMBER; i++)
+//        {
+//            if ((irq_mask >> i) & 1)
+//            {
+//                button[i]->getState(&state);
+//                
+//                if (state)
+//                {
+//                    irq_reg |= (1 << i);
+//                    irq[0]->setIrq(HIGH);
+//                }
+//            }
+//        }
     }
 }
 
@@ -162,18 +164,30 @@ void receive_command(int nb)
             }
             break;
         
-        case BUTTON:
-            if (id < BUTTON_NUMBER)
+        case BUTTON_SWITCH:
+            if (id < BUTTON_SWITCH_NUMBER)
             {
-                COMMAND(button);
+                COMMAND(button_switch);
             }
             else
             {
-                SERIAL_DEBUG.println("Invalid BUTTON ID.");
+                SERIAL_DEBUG.println("Invalid BUTTON SWITCH ID.");
                 SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
             }
             break;
-        
+
+        case BUTTON_ROCKER:
+            if (id < BUTTON_ROCKER_NUMBER)
+            {
+                COMMAND(button_rocker);
+            }
+            else
+            {
+                SERIAL_DEBUG.println("Invalid BUTTON ROCKER ID.");
+                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
+            }
+            break;
+            
         case DISPLAY_7SEG_4DIG:
             if (id < DISPLAY_7SEG_4DIG_NUMBER)
             {

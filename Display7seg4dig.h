@@ -1,11 +1,6 @@
 #ifndef _DISPLAY_7SEG_4DIG_H
 #define _DISPLAY_7SEG_4DIG_H
 
-#include <stdarg.h>
-#include <stdint.h>
-
-#include <Arduino.h>
-
 #include "common.h"
 #include "Max7219.h"
 

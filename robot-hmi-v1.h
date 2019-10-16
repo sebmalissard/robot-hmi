@@ -10,7 +10,8 @@
 /* Device number */
 #define LED_NUMBER                  3
 #define LED_RGB_NUMBER              1
-#define BUTTON_NUMBER               6
+#define BUTTON_SWITCH_NUMBER        3
+#define BUTTON_ROCKER_NUMBER        3
 #define DISPLAY_7SEG_4DIG_NUMBER    1
 #define IRQ_NUMBER                  1
 
@@ -25,19 +26,30 @@
     led_rgb[0] = new LedRgb(5, 6, 9, false);            \
     /* MAX LED_RGB_NUMBER */                            \
                                                         \
-    button[0] = new Button(7);                          \
-    button[1] = new Button(0);                          \
-    button[2] = new Button(1);                          \
-    button[3] = new Button(4);                          \
-    button[4] = new Button(A3);                         \
-    button[5] = new Button(14);                         \
-    /* MAX BUTTON_NUMBER */                             \
+    button_switch[0] = new ButtonSwitch(0);             \
+    button_switch[1] = new ButtonSwitch(1);             \
+    button_switch[2] = new ButtonSwitch(4);             \
+    /* MAX BUTTON_SWITCH_NUMBER */                      \
+                                                        \
+    button_rocker[0] = new ButtonRocker(7);             \
+    button_rocker[1] = new ButtonRocker(A3);            \
+    button_rocker[2] = new ButtonRocker(14);            \
+    /* MAX BUTTON_ROCKER_NUMBER */                      \
                                                         \
     display_7seg_4dig[0] = new Display7seg4dig();       \
     /* MAX DISPLAY_7SEG_4DIG_NUMBER */                  \
                                                         \
     irq[0] = new  Irq(8);                               \
     /* MAX IRQ_NUMBER */                                \
+                                                        \
+    void *irq_callback[8] = {                           \
+        &button_switch[0],                              \
+        &button_switch[1],                              \
+        &button_switch[2],                              \
+        &button_rocker[0],                              \
+        &button_rocker[1],                              \
+        &button_rocker[2],                              \
+    };                                                  \
                                                         \
     display_7seg_4dig[0]->setPower(1);                  \
     display_7seg_4dig[0]->setChar('-', 'H', 'I', '-');  \

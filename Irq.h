@@ -1,11 +1,6 @@
 #ifndef _IRQ_H
 #define _IRQ_H
 
-#include <stdarg.h>
-#include <stdint.h>
-
-#include <Arduino.h>
-
 #include "common.h"
 
 extern uint8_t irq_reg;

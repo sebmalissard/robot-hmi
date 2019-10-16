@@ -1,11 +1,6 @@
 #ifndef _LED_RGB_H
 #define _LED_RGB_H
 
-#include <stdarg.h>
-#include <stdint.h>
-
-#include <Arduino.h>
-
 #include "common.h"
 
 class LedRgb

@@ -13,8 +13,12 @@
 #define LED_RGB_NUMBER 0
 #endif
 
-#ifndef BUTTON_NUMBER
-#define BUTTON_NUMBER 0
+#ifndef BUTTON_SWITCH_NUMBER
+#define BUTTON_SWITCH_NUMBER 0
+#endif
+
+#ifndef BUTTON_ROCKER_NUMBER
+#define BUTTON_ROCKER_NUMBER 0
 #endif
 
 #ifndef DISPLAY_7SEG_4DIG_NUMBER

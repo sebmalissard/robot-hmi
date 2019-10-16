@@ -1,11 +1,6 @@
 #ifndef _LED_H
 #define _LED_H
 
-#include <stdarg.h>
-#include <stdint.h>
-
-#include <Arduino.h>
-
 #include "common.h"
 
 class Led
