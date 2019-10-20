@@ -1,9 +1,9 @@
 #ifndef _LED_H
 #define _LED_H
 
-#include "common.h"
+#include "Device.h"
 
-class Led
+class Led : public Device
 {
     public:
         Led(uint8_t pin, bool is_pwm);

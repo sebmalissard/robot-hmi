@@ -52,7 +52,8 @@ status_t Irq::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
         case MASK:
             if (size == 1)
                 return setMask(arg[0]);
-            break;
+            else
+                INVALID_ARGUMENT("IRQ Mask invalid number of argument.");
         
         default:
             SERIAL_DEBUG.println("Invalid IRQ set command.");

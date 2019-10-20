@@ -25,8 +25,4 @@
 #define DISPLAY_7SEG_4DIG_NUMBER 0
 #endif
 
-#ifndef IRQ_NUMBER
-#define IRQ_NUMBER 0
-#endif
-
 #endif /* _CONFIG_H */

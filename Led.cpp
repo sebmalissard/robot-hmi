@@ -84,17 +84,20 @@ status_t Led::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
         case POWER:
              if (size == 1)
                 return setPower(arg[0]);
-             break;
+            else
+                INVALID_ARGUMENT("Led Power invalid number of argument.");
             
         case INTENSITY:
             if (size == 1)
                 return setIntensity(arg[0]);
-            break;
+            else
+                INVALID_ARGUMENT("Led Intensity invalid number of argument.");
             
         case BLINK:
             if (size == 3)
                 return setBlink((arg[0] << 8) + arg[1], arg[2]);
-            break;
+            else
+                INVALID_ARGUMENT("Led Blink invalid number of argument.");
             
         default:
             SERIAL_DEBUG.println("Unsupported Led set command.");

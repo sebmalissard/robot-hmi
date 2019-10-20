@@ -10,7 +10,7 @@ ButtonRocker::ButtonRocker(uint8_t pin): _pin(pin)
     pinMode(pin, INPUT_PULLUP);
 }
 
-bool ButtonRocker::irq()
+bool ButtonRocker::irq_polling()
 {
     static uint8_t last_state = LOW;
     uint8_t state;

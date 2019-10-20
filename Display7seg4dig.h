@@ -1,10 +1,10 @@
 #ifndef _DISPLAY_7SEG_4DIG_H
 #define _DISPLAY_7SEG_4DIG_H
 
-#include "common.h"
 #include "Max7219.h"
+#include "Device.h"
 
-class Display7seg4dig
+class Display7seg4dig : public Device
 {
     public:
         Display7seg4dig();

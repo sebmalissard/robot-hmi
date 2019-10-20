@@ -117,22 +117,26 @@ status_t LedRgb::commandSet(uint8_t cmd, const uint8_t *arg, size_t size)
         case POWER:
              if (size == 1)
                 return setPower(arg[0]);
-             break;
+            else
+                INVALID_ARGUMENT("Led RGB Power invalid number of argument.");
             
         case COLOR:
             if (size == 1)
                 return setColor(arg[0]);
-            break;
+            else
+                INVALID_ARGUMENT("Led RGB Color invalid number of argument.");
             
         case PWM:
             if (size == 3)
                 return setPwm(arg[0], arg[1], arg[2]);
-            break;
+            else
+                INVALID_ARGUMENT("Led RGB PWM invalid number of argument.");
             
         case BLINK:
             if (size == 3)
                 return setBlink((arg[0] << 8) + arg[1], arg[2]);
-            break;
+            else
+                INVALID_ARGUMENT("Led RGB BLink invalid number of argument.");
         
         default:
             SERIAL_DEBUG.println("Unsupported Led RGB set command.");

@@ -86,32 +86,38 @@ status_t Display7seg4dig::commandSet(uint8_t cmd, const uint8_t *arg, size_t siz
         case display_7seg_4dig_cmd_t::POWER:
              if (size == 1)
                 return setPower(arg[0]);
-             break;
+            else
+                INVALID_ARGUMENT("Display 7seg 4dig Power invalid number of argument.");
             
         case display_7seg_4dig_cmd_t::INTENSITY:
             if (size == 1)
                 return setIntensity(arg[0]);
-            break;
+            else
+                INVALID_ARGUMENT("Display 7seg 4dig Intensity invalid number of argument.");
             
         case display_7seg_4dig_cmd_t::CHAR:
             if (size == 4)
                 return setChar(arg[0], arg[1], arg[2], arg[3]);
-            break;
+            else
+                INVALID_ARGUMENT("Display 7seg 4dig Cahr invalid number of argument.");
             
         case display_7seg_4dig_cmd_t::RAW:
             if (size == 4)
                 return setRaw(arg[0], arg[1], arg[2], arg[3]);
-            break;
+            else
+                INVALID_ARGUMENT("Display 7seg 4dig Raw invalid number of argument.");
 
         case display_7seg_4dig_cmd_t::INTEGER:
             if (size == 2)
                 return setInteger((arg[0] << 8) + arg[1]);
-            break;
+            else
+                INVALID_ARGUMENT("Display 7seg 4dig Integer invalid number of argument.");
             
         case display_7seg_4dig_cmd_t::BLINK:
             if (size == 3)
                 return setBlink((arg[0] << 8) + arg[1], arg[2]);
-            break;
+            else
+                INVALID_ARGUMENT("Display 7seg 4dig Blink invalid number of argument.");
             
         default:
             SERIAL_DEBUG.println("Unsupported Display 7seg 4dig set command.");

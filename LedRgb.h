@@ -1,9 +1,9 @@
 #ifndef _LED_RGB_H
 #define _LED_RGB_H
 
-#include "common.h"
+#include "Device.h"
 
-class LedRgb
+class LedRgb : public Device
 {
     public:
         LedRgb(uint8_t pin_red, uint8_t pin_green, uint8_t pin_blue, bool is_common_cathode);

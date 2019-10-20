@@ -1,12 +1,12 @@
 #ifndef _IRQ_H
 #define _IRQ_H
 
-#include "common.h"
+#include "Device.h"
 
 extern uint8_t irq_reg;
 extern uint8_t irq_mask;
 
-class Irq
+class Irq : public Device
 {
     public:
         Irq(uint8_t pin);

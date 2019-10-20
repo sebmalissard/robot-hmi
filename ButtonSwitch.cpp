@@ -10,7 +10,7 @@ ButtonSwitch::ButtonSwitch(uint8_t pin): _pin(pin)
     pinMode(pin, INPUT_PULLUP);
 }
 
-bool ButtonSwitch::irq()
+bool ButtonSwitch::irq_polling()
 {
     static uint8_t last_state = LOW;
     uint8_t state;

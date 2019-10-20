@@ -1,14 +1,14 @@
 #ifndef _BUTTON_SWITCH_H
 #define _BUTTON_SWITCH_H
 
-#include "common.h"
+#include "Device.h"
 
-class ButtonSwitch
+class ButtonSwitch : public Device
 {
     public:
         ButtonSwitch(uint8_t pin);
         
-        bool irq();
+        bool irq_polling();
         
         status_t commandGet(uint8_t cmd, uint8_t *arg, size_t *size);
         status_t commandSet(uint8_t cmd, const uint8_t *arg, size_t size);

@@ -13,7 +13,6 @@
 #define BUTTON_SWITCH_NUMBER        3
 #define BUTTON_ROCKER_NUMBER        3
 #define DISPLAY_7SEG_4DIG_NUMBER    1
-#define IRQ_NUMBER                  1
 
 /* Setup pinmux */
 #define SETUP_PINMUX()                                  \
@@ -42,14 +41,13 @@
     irq[0] = new  Irq(8);                               \
     /* MAX IRQ_NUMBER */                                \
                                                         \
-    void *irq_callback[8] = {                           \
-        &button_switch[0],                              \
-        &button_switch[1],                              \
-        &button_switch[2],                              \
-        &button_rocker[0],                              \
-        &button_rocker[1],                              \
-        &button_rocker[2],                              \
-    };                                                  \
+    irq_callback[0] = button_switch[0];                 \
+    irq_callback[1] = button_switch[1];                 \
+    irq_callback[2] = button_switch[2];                 \
+    irq_callback[3] = button_rocker[0];                 \
+    irq_callback[4] = button_rocker[1];                 \
+    irq_callback[5] = button_rocker[2];                 \
+    /* MAX IRQ_REG_SIZE */                              \
                                                         \
     display_7seg_4dig[0]->setPower(1);                  \
     display_7seg_4dig[0]->setChar('-', 'H', 'I', '-');  \

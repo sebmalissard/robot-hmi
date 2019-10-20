@@ -9,80 +9,42 @@
 #include "Display7seg4dig.h"
 #include "Irq.h"
 
-status_t status = STATUS_OK;
-device_t device = SYSTEM;
-uint8_t  id = 0;
-
-bool    read_request = false;
 uint8_t request_msg[16] = {0};
 size_t  request_size = 3;
 
 uint8_t irq_reg  = 0x00;
 uint8_t irq_mask = 0xff;
+Device  *irq_callback[IRQ_REG_SIZE];
 
-Led *led[LED_NUMBER];
-LedRgb *led_rgb[LED_RGB_NUMBER];
-ButtonSwitch *button_switch[BUTTON_SWITCH_NUMBER];
-ButtonRocker *button_rocker[BUTTON_ROCKER_NUMBER];
-Display7seg4dig *display_7seg_4dig[DISPLAY_7SEG_4DIG_NUMBER];
-Irq * irq[IRQ_NUMBER];
+Led               *led[LED_NUMBER];
+LedRgb            *led_rgb[LED_RGB_NUMBER];
+ButtonSwitch      *button_switch[BUTTON_SWITCH_NUMBER];
+ButtonRocker      *button_rocker[BUTTON_ROCKER_NUMBER];
+Display7seg4dig   *display_7seg_4dig[DISPLAY_7SEG_4DIG_NUMBER];
+Irq               *irq[IRQ_NUMBER];
 
+typedef struct device_list_t {
+  Device  **dev;
+  size_t  size;
+  
+};
+
+device_list_t devices[] =
+{
+    {(Device**)led,               LED_NUMBER},
+    {(Device**)led_rgb,           LED_RGB_NUMBER},
+    {(Device**)button_switch,     BUTTON_SWITCH_NUMBER},
+    {(Device**)button_rocker,     BUTTON_ROCKER_NUMBER},
+    {(Device**)display_7seg_4dig, DISPLAY_7SEG_4DIG_NUMBER},
+    {(Device**)irq,               IRQ_NUMBER},
+};
+
+void devices_loop();
+void devices_irq_polling();
+void set_invalid_packet(status_t status);
+void command_packet(Device *dev[], uint8_t dev_size,  uint8_t *packet, uint8_t nb);
 void receive_command(int nb);
 void request_status();
-
-void irq_button_loop()
-{
-    static unsigned long prev_time = 0;
-    unsigned long current_time = millis();
-    
-    if (current_time - prev_time > LOOP_POLLING_BUTTON)
-    {
-        unsigned int i;
-        uint8_t state;
-
-        prev_time = current_time;
-// TODO fixme
-//        for (i=0; i<BUTTON_NUMBER; i++)
-//        {
-//            if ((irq_mask >> i) & 1)
-//            {
-//                button[i]->getState(&state);
-//                
-//                if (state)
-//                {
-//                    irq_reg |= (1 << i);
-//                    irq[0]->setIrq(HIGH);
-//                }
-//            }
-//        }
-    }
-}
-
-#define SET_INVALID_STATUS_PACKET(status)       \
-    request_msg[2] = status;                    \
-    request_size = 3 
-
-#define COMMAND(device)                                                               \
-    if (read_request)                                                                 \
-    {                                                                                 \
-        size_t arg_size = 0;                                                          \
-        request_msg[2] = device[id]->commandGet(command, &request_msg[3], &arg_size); \
-        if (request_msg[2] == STATUS_OK)                                              \
-            request_size = 3 + arg_size;                                              \
-        else                                                                          \
-            request_size = 3;                                                         \
-    }                                                                                 \
-    else                                                                              \
-    {                                                                                 \
-        request_msg[2] = device[id]->commandSet(command, &packet[3], nb - 3);         \
-        request_size = 3;                                                             \
-    }
-
-#define LOOP(device, nb)                \
-    for (unsigned int i=0; i<nb; i++)   \
-    {                                   \
-        device[i]->loop();              \
-    }
 
 void setup()
 {
@@ -97,19 +59,94 @@ void setup()
 
 void loop()
 {
-    LOOP(led, LED_NUMBER);
-    LOOP(led_rgb, LED_RGB_NUMBER);
-    LOOP(display_7seg_4dig, DISPLAY_7SEG_4DIG_NUMBER);
+    devices_loop();
+    devices_irq_polling();
     
-    irq_button_loop();
-   
     delay(LOOP_PERIOD);
+}
+
+void devices_loop()
+{
+    unsigned int i, j;
+
+    for (i=0; i<sizeof(devices)/sizeof(devices[0]); i++)
+    {
+        for (j=0; j<devices[i].size; j++)
+        {
+            devices[i].dev[j]->loop();
+        }
+    }
+}
+
+void devices_irq_polling()
+{
+    static unsigned long prev_time = 0;
+    unsigned long current_time = millis();
+    
+    if (current_time - prev_time > LOOP_POLLING_BUTTON)
+    {
+        unsigned int i;
+
+        prev_time = current_time;
+
+        for (i=0; i<IRQ_REG_SIZE; i++)
+        {
+            if ((irq_callback[i] != NULL) && ((irq_mask >> i) & 1) && (irq_callback[i]->irq_polling()))
+            {
+                irq_reg |= (1 << i);
+                irq[0]->setIrq(HIGH);
+            }
+        }
+    }
+}
+
+void set_invalid_packet(status_t status)
+{
+    request_msg[2] = status;
+    request_size = 3;
+}
+
+void command_packet(Device *dev[], uint8_t dev_size,  uint8_t *packet, uint8_t nb)
+{
+    uint8_t device  = packet[0];
+    uint8_t id      = packet[1];
+    uint8_t command = packet[2];
+    
+    if (id < dev_size)
+    {
+        if (nb == 3) // read request
+        {
+            size_t arg_size = 0;
+            
+            request_msg[2] = dev[id]->commandGet(command, &request_msg[3], &arg_size);
+            request_size = 3;
+            
+            if (request_msg[2] == STATUS_OK)
+            {
+                request_size += arg_size;
+            }
+        }
+        else // write request
+        {
+            request_msg[2] = dev[id]->commandSet(command, &packet[3], nb - 3);
+            request_size = 3;
+        }
+    }
+    else
+    {
+        SERIAL_DEBUG.print("Receive invalid ID (");
+        SERIAL_DEBUG.print(id, HEX);
+        SERIAL_DEBUG.print("):");
+        SERIAL_DEBUG.println(deviceToString((device_t) device));
+        set_invalid_packet(STATUS_INVALID_ID);
+    }
 }
 
 void receive_command(int nb)
 {
-    uint8_t command = 0;
     uint8_t packet[nb];
+    uint8_t device;
+    uint8_t id;
     
     for (int i=0; i<nb; i++)
     {
@@ -119,102 +156,31 @@ void receive_command(int nb)
     if (nb < 3)
     {
         SERIAL_DEBUG.println("Receive incomplete packet.");
+        request_msg[0] = SYSTEM;
+        request_msg[1] = 0x00;
+        set_invalid_packet(STATUS_INVALID_PACKET);
         return;
     }
     
-    device  = (device_t) packet[0];
-    id      = packet[1];
-    command = packet[2];
+    device = packet[0];
+    id     = packet[1];
     
     request_msg[0] = device;
     request_msg[1] = id;
     
-    if (nb == 3)
+    switch ((device_t) device)
     {
-        read_request = true;
-    }
-    else
-    {
-        read_request = false;
-    }
-    
-    switch (device)
-    {
-        case LED:
-            if (id < LED_NUMBER)
-            {
-                COMMAND(led);
-            }
-            else
-            {
-                SERIAL_DEBUG.println("Invalid LED ID.");
-                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
-            }
-            break;
-        
-        case LED_RGB:
-            if (id < LED_RGB_NUMBER)
-            {
-                COMMAND(led_rgb);
-            }
-            else
-            {
-                SERIAL_DEBUG.println("Invalid LED RGB ID.");
-                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
-            }
-            break;
-        
-        case BUTTON_SWITCH:
-            if (id < BUTTON_SWITCH_NUMBER)
-            {
-                COMMAND(button_switch);
-            }
-            else
-            {
-                SERIAL_DEBUG.println("Invalid BUTTON SWITCH ID.");
-                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
-            }
-            break;
-
-        case BUTTON_ROCKER:
-            if (id < BUTTON_ROCKER_NUMBER)
-            {
-                COMMAND(button_rocker);
-            }
-            else
-            {
-                SERIAL_DEBUG.println("Invalid BUTTON ROCKER ID.");
-                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
-            }
-            break;
-            
-        case DISPLAY_7SEG_4DIG:
-            if (id < DISPLAY_7SEG_4DIG_NUMBER)
-            {
-                COMMAND(display_7seg_4dig);
-            }
-            else
-            {
-                SERIAL_DEBUG.println("Invalid Display 7 segments 4 digits ID.");
-                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
-            }
-            break;
-        
-        case IRQ:
-            if (id == 0)
-            {
-                COMMAND(irq);
-            }
-            else
-            {
-                SERIAL_DEBUG.println("Invalid IRQ ID.");
-                SET_INVALID_STATUS_PACKET(STATUS_INVALID_ID);
-            }
-            break;
-        
+        case LED:               command_packet((Device**)led,               LED_NUMBER,               packet, nb); break;
+        case LED_RGB:           command_packet((Device**)led_rgb,           LED_RGB_NUMBER,           packet, nb); break;
+        case BUTTON_SWITCH:     command_packet((Device**)button_switch,     BUTTON_SWITCH_NUMBER,     packet, nb); break;
+        case BUTTON_ROCKER:     command_packet((Device**)button_rocker,     BUTTON_ROCKER_NUMBER,     packet, nb); break;
+        case DISPLAY_7SEG_4DIG: command_packet((Device**)display_7seg_4dig, DISPLAY_7SEG_4DIG_NUMBER, packet, nb); break;
+        case IRQ:               command_packet((Device**)irq,               IRQ_NUMBER,               packet, nb); break;
         default:
-            SERIAL_DEBUG.println("Receive invalid device command.");
-            SET_INVALID_STATUS_PACKET(STATUS_INVALID_DEVICE);
+            SERIAL_DEBUG.print("Receive invalid device (");
+            SERIAL_DEBUG.print(device, HEX);
+            SERIAL_DEBUG.print("):");
+            set_invalid_packet(STATUS_INVALID_DEVICE); 
     }
 }
 
