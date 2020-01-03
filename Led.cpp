@@ -8,7 +8,7 @@ typedef enum led_cmd_t
 } led_cmd_t;
 
 Led::Led(uint8_t pin, bool is_pwm): _force_update(true), _pin(pin), _is_pwm(is_pwm), _power(LOW),  _intensity(128),
-    _blink_period(0), _blink_duty_cycle(0)
+    _blink_period(0), _blink_duty_cycle(0), _loop_i(0), _loop_last_value(LOW)
 {
     pinMode(pin, OUTPUT);
     
@@ -17,9 +17,6 @@ Led::Led(uint8_t pin, bool is_pwm): _force_update(true), _pin(pin), _is_pwm(is_p
 
 void Led::loop()
 {
-    static uint16_t i = 0;
-    static bool last_value = LOW;
-    
     if (_force_update)
     {
         ledSetValue(_power);
@@ -28,28 +25,28 @@ void Led::loop()
     
     if (_power)
     {
-        if (i < DIV_ROUND_CLOSEST((uint32_t)_blink_period * _blink_duty_cycle / 255, LOOP_PERIOD))
+        if (_loop_i < DIV_ROUND_CLOSEST((uint32_t)_blink_period * _blink_duty_cycle / 255, LOOP_PERIOD))
         {
-            if (last_value != HIGH)
+            if (_loop_last_value != HIGH)
             {
                 ledSetValue(HIGH);
-                last_value = HIGH;
+                _loop_last_value = HIGH;
             }
         }
         else
         {
-            if (last_value != LOW)
+            if (_loop_last_value != LOW)
             {
                 ledSetValue(LOW);
-                last_value = LOW;
+                _loop_last_value = LOW;
             }
         }
         
-        i++;
+        _loop_i++;
         
-        if (i >= _blink_period / LOOP_PERIOD)
+        if (_loop_i >= _blink_period / LOOP_PERIOD)
         {
-            i = 0;
+            _loop_i = 0;
         }
     }
 }

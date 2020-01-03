@@ -42,6 +42,8 @@ class Display7seg4dig : public Device
         int16_t     _integer;
         uint16_t    _blink_period;
         uint8_t     _blink_duty_cycle;
+        uint16_t    _loop_i;
+        bool        _loop_last_value;
 };
 
 #endif /* _DISPLAY_7SEG_4DIG_H */

@@ -11,17 +11,15 @@ typedef enum display_7seg_4dig_cmd_t
 } display_7seg_4dig_cmd_t;
 
 Display7seg4dig::Display7seg4dig(): _force_update(true), _display(4), _power(LOW), _print_func(RAW), _intensity(128),
-    _char({0, 0, 0, 0}), _raw({0, 0, 0, 0}), _integer(0), _blink_period(0), _blink_duty_cycle(0)
+    _char({0, 0, 0, 0}), _raw({0, 0, 0, 0}), _integer(0), _blink_period(0), _blink_duty_cycle(0),
+    _loop_i(0), _loop_last_value(LOW)
 {
     displaySetValue(_power);
 }
 
 
 void Display7seg4dig::loop()
-{
-    static uint16_t i = 0;
-    static bool last_value = LOW;
-    
+{   
     if (_force_update)
     {
         displaySetValue(_power);
@@ -30,28 +28,28 @@ void Display7seg4dig::loop()
     
     if (_power)
     {
-        if (i < DIV_ROUND_CLOSEST((uint32_t)_blink_period * _blink_duty_cycle / 255, LOOP_PERIOD))
+        if (_loop_i < DIV_ROUND_CLOSEST((uint32_t)_blink_period * _blink_duty_cycle / 255, LOOP_PERIOD))
         {
-            if (last_value != HIGH)
+            if (_loop_last_value != HIGH)
             {
                 displaySetValue(HIGH);
-                last_value = HIGH;
+                _loop_last_value = HIGH;
             }
         }
         else
         {
-            if (last_value != LOW)
+            if (_loop_last_value != LOW)
             {
                 displaySetValue(LOW);
-                last_value = LOW;
+                _loop_last_value = LOW;
             }
         }
         
-        i++;
+        _loop_i++;
         
-        if (i >= _blink_period / LOOP_PERIOD)
+        if (_loop_i >= _blink_period / LOOP_PERIOD)
         {
-            i = 0;
+            _loop_i = 0;
         }
     }
 }

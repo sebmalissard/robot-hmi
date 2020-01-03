@@ -39,6 +39,8 @@ class LedRgb : public Device
         uint8_t     _pwm_blue;
         uint16_t    _blink_period;
         uint8_t     _blink_duty_cycle;
+        uint16_t    _loop_i;
+        bool        _loop_last_value;
 };
 
 #endif /* _LED_RGB_H */
