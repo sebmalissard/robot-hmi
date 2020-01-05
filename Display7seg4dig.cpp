@@ -6,7 +6,7 @@ typedef enum display_7seg_4dig_cmd_t
     INTENSITY   = 0x02,
     CHAR        = 0x03,
     RAW         = 0x04,
-    INTEGER     = 0x5,
+    INTEGER     = 0x05,
     BLINK       = 0x06,
 } display_7seg_4dig_cmd_t;
 

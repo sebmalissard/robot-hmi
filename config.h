@@ -3,6 +3,7 @@
 
 /* Uncomment the config to include */
 #include "robot-hmi-v1.h"
+//#include "robot-controller-v1.h"
 
 /* Default value if undefine */
 #ifndef LED_NUMBER
@@ -19,6 +20,10 @@
 
 #ifndef BUTTON_ROCKER_NUMBER
 #define BUTTON_ROCKER_NUMBER 0
+#endif
+
+#ifndef AX12_NUMBER
+#define AX12_NUMBER 0
 #endif
 
 #ifndef DISPLAY_7SEG_4DIG_NUMBER
