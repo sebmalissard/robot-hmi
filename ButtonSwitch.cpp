@@ -12,14 +12,13 @@ ButtonSwitch::ButtonSwitch(uint8_t pin): _pin(pin)
 
 bool ButtonSwitch::irq_polling()
 {
-    static uint8_t last_state = LOW;
     uint8_t state;
     
     getState(&state);
     
-    if (last_state != state)
+    if (_irq_polling_last_state != state)
     {
-        last_state = state;
+        _irq_polling_last_state = state;
         
         if (state == HIGH)
         {

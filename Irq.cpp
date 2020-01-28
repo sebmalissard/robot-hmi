@@ -6,22 +6,18 @@ typedef enum irq_cmd_t
     MASK        = 0x02,
 } irq_cmd_t;
 
-Irq::Irq(uint8_t pin): _pin(pin)
+Irq::Irq(uint8_t pin): _pin(pin), _current_irq_value(LOW)
 {
     pinMode(pin, OUTPUT);
+    setIrq(_current_irq_value);
 }
 
 
 void Irq::setIrq(bool value)
 {
-    static bool last_value = 0;
-
-    SERIAL_DEBUG.println("set_irq");
-    if (last_value != value)
+    if (_current_irq_value != value)
     {
-        last_value = value;
-        SERIAL_DEBUG.println("SET:");
-        SERIAL_DEBUG.println(value);
+        _current_irq_value = value;
         digitalWrite(_pin, value);
     }
 }
@@ -73,9 +69,6 @@ status_t Irq::getRegister(uint8_t *reg)
 
     irq_reg = 0x00;
     setIrq(LOW);
-
-SERIAL_DEBUG.println("Read register value =");
-SERIAL_DEBUG.println(*reg);
     
     return STATUS_OK;
 }

@@ -23,6 +23,7 @@ class Irq : public Device
     
     private:
         uint8_t     _pin;
+        bool        _current_irq_value;
 };
 
 #endif /* _IRQ_H */

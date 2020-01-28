@@ -18,6 +18,7 @@ class ButtonSwitch : public Device
     private:
         uint8_t     _pin;
         bool        _state;
+        uint8_t     _irq_polling_last_state;
 };
 
 #endif /* _BUTTON_SWITCH_H */
