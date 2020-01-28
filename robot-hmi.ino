@@ -15,7 +15,7 @@ size_t  request_size = 3;
 
 uint8_t irq_reg  = 0x00;
 uint8_t irq_mask = 0xff;
-Device  *irq_callback[IRQ_REG_SIZE];
+Device  *irq_callback[IRQ_REG_SIZE] = {0};
 
 Led               *led[LED_NUMBER];
 LedRgb            *led_rgb[LED_RGB_NUMBER];
