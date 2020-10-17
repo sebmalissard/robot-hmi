@@ -8,6 +8,7 @@
 #include "ButtonRocker.h"
 #include "Ax12.h"
 #include "Display7seg4dig.h"
+#include "Analog.h"
 #include "Irq.h"
 
 uint8_t request_msg[16] = {0};
@@ -23,6 +24,7 @@ ButtonSwitch      *button_switch[BUTTON_SWITCH_NUMBER];
 ButtonRocker      *button_rocker[BUTTON_ROCKER_NUMBER];
 Ax12              *ax12[AX12_NUMBER];
 Display7seg4dig   *display_7seg_4dig[DISPLAY_7SEG_4DIG_NUMBER];
+Analog            *analog[ANALOG_NUMBER];
 Irq               *irq[IRQ_NUMBER];
 
 typedef struct device_list_t {
@@ -38,6 +40,7 @@ device_list_t devices[] =
     {(Device**)button_rocker,     BUTTON_ROCKER_NUMBER},
     {(Device**)ax12,              AX12_NUMBER},
     {(Device**)display_7seg_4dig, DISPLAY_7SEG_4DIG_NUMBER},
+    {(Device**)analog,            ANALOG_NUMBER},
     {(Device**)irq,               IRQ_NUMBER},
 };
 
@@ -178,6 +181,7 @@ void receive_command(int nb)
         case BUTTON_ROCKER:     command_packet((Device**)button_rocker,     BUTTON_ROCKER_NUMBER,     packet, nb); break;
         case AX12:              command_packet((Device**)ax12,              AX12_NUMBER,              packet, nb); break;
         case DISPLAY_7SEG_4DIG: command_packet((Device**)display_7seg_4dig, DISPLAY_7SEG_4DIG_NUMBER, packet, nb); break;
+        case ANALOG:            command_packet((Device**)analog,            ANALOG_NUMBER,            packet, nb); break;
         case IRQ:               command_packet((Device**)irq,               IRQ_NUMBER,               packet, nb); break;
         default:
             SERIAL_DEBUG.print("Receive invalid device (");

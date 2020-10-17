@@ -13,6 +13,7 @@
 #define BUTTON_SWITCH_NUMBER        3
 #define BUTTON_ROCKER_NUMBER        2
 #define DISPLAY_7SEG_4DIG_NUMBER    1
+#define ANALOG_NUMBER               0
 
 /* Setup pinmux */
 #define SETUP_PINMUX()                                  \

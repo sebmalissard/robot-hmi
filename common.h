@@ -26,6 +26,7 @@ typedef enum device_t {
     AX12                    = 0x07,
     DISPLAY_7SEG_4DIG       = 0x08,
     MOTOR                   = 0x09,
+    ANALOG                  = 0x0A,
     IRQ                     = 0xFF
 } device_t;
 
@@ -43,6 +44,7 @@ inline const char *deviceToString(device_t device)
         case AX12:              return "AX12";
         case DISPLAY_7SEG_4DIG: return "DISPLAY_7SEG_4DIG";
         case MOTOR:             return "MOTOR";
+        case ANALOG:            return "ANALOG";
         case IRQ:               return "IRQ";
     }
     return "UNKNOWN";
