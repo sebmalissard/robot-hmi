@@ -14,4 +14,6 @@ USER_LIB_PATH    := $(PROJECT_DIR)/lib
 BOARD_TAG = promicro
 BOARD_SUB = 16MHzatmega32U4
 
+ARDUINO_LIBS = SPI Wire AX12A Max7219
+
 include $(ARDMK_DIR)/Arduino.mk
