@@ -16,7 +16,7 @@
 #define BUTTON_SWITCH_NUMBER        0
 #define BUTTON_ROCKER_NUMBER        0
 #define DISPLAY_7SEG_4DIG_NUMBER    0
-#define AX12_NUMBER                 1
+#define AX12_NUMBER                 2
 #define ANALOG_NUMBER               2
 
 #define DirectionPin    (7)
@@ -28,6 +28,7 @@
     ax12a.begin(BaudRate, DirectionPin, &Serial1);      \
                                                         \
     ax12[0] = new Ax12(15);                             \
+    ax12[1] = new Ax12(16);                             \
     /* MAX AX12_NUMBER */                               \
                                                         \
     analog[0] = new Analog(A0);                         \
