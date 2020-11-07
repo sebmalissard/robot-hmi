@@ -1,9 +1,15 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-/* Uncomment the config to include */
+/* Select the config to include */
+// #define CONFIG_...
+#if defined(CONFIG_ROBOT_HMI_V1)
 #include "robot-hmi-v1.h"
-//#include "robot-controller-v1.h"
+#elif defined(CONFIG_ROBOT_CONTROLLER_V1)
+#include "robot-controller-v1.h"
+#else
+#error "You need to define the config to use"
+#endif
 
 /* Default value if undefine */
 #ifndef LED_NUMBER
