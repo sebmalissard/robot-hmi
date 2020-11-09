@@ -9,9 +9,10 @@ typedef enum ax12_cmd_t
     POSITION    = 0x02,
 } ax12_cmd_t;
 
-Ax12::Ax12(uint8_t id): _force_update(true), _id(id), _power_led(LOW), _position(500)
+Ax12::Ax12(uint8_t id): _force_update(false), _id(id), _power_led(LOW), _position(500)
 {
-    ax12SetValue();
+    // Do not modify the initial position TODO return error unknown for get position in this case
+    //ax12SetValue();
 }
 
 void Ax12::loop()

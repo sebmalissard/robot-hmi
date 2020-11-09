@@ -27,7 +27,7 @@
 {                                                       \
     ax12a.begin(BaudRate, DirectionPin, &Serial1);      \
                                                         \
-    ax12[0] = new Ax12(7);                              \
+    ax12[0] = new Ax12(15);                             \
     /* MAX AX12_NUMBER */                               \
                                                         \
     analog[0] = new Analog(A0);                         \
