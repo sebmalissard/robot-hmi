@@ -15,9 +15,10 @@
 #define LED_RGB_NUMBER              0
 #define BUTTON_SWITCH_NUMBER        0
 #define BUTTON_ROCKER_NUMBER        0
-#define DISPLAY_7SEG_4DIG_NUMBER    0
 #define AX12_NUMBER                 2
+#define DISPLAY_7SEG_4DIG_NUMBER    0
 #define ANALOG_NUMBER               2
+#define IRQ_NUMBER                  0
 
 #define DirectionPin    (7)
 #define BaudRate        (1000000ul)

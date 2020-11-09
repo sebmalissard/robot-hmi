@@ -14,6 +14,7 @@
 #define BUTTON_ROCKER_NUMBER        2
 #define DISPLAY_7SEG_4DIG_NUMBER    1
 #define ANALOG_NUMBER               0
+#define IRQ_NUMBER                  1
 
 /* Setup pinmux */
 #define SETUP_PINMUX()                                  \

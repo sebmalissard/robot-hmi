@@ -64,6 +64,5 @@ inline const char *deviceToString(device_t device)
 }
 
 #define IRQ_REG_SIZE  8
-#define IRQ_NUMBER    1
 
 #endif /* _COMMON_H */
